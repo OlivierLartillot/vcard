@@ -1,0 +1,29 @@
+
+.container-image-hero {
+    position: relative;
+    width: 350px;
+}
+
+.container-image-ronde {
+    width: 33%;
+    position: absolute;
+    left: 33%;
+    top: 75%;
+    
+}
+
+.image-hero {
+    border-radius: 20px;
+    width: 100%;
+    max-height: 50vh;
+}
+
+.image-ronde {
+    border-radius: 50%;
+    border: 0.3rem white solid;
+    width: 100%;
+}
+
+.main-container {
+    margin-top: 4rem;
+}

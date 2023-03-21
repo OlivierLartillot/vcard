@@ -1,0 +1,75 @@
+<!-- AIzaSyDPaB2GxxuZlBHUALFnLKRMCcIFNt7LH8A -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ma carte Google Maps</title>
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <form>
+      <label for="lat">Latitude:</label>
+      <input type="text" id="lat" name="lat"><br>
+      <label for="lng">Longitude:</label>
+      <input type="text" id="lng" name="lng"><br>
+    </form>
+    <script>
+      let map;
+      let marker;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 18.565463, lng: -68.379498 }, // Coordonnées de Paris, France
+          zoom: 12
+        });
+        marker = new google.maps.Marker({
+          position: { lat: 18.565463, lng: -68.379498 }, // Coordonnées de Paris, France
+          map: map,
+          draggable: true
+        });
+        marker.addListener("dragend", () => {
+          updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+        });
+        updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+        map.addListener("click", (event) => {
+          if (marker) {
+            marker.setPosition(event.latLng);
+          } else {
+            addMarker(event.latLng);
+          }
+          updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+        });
+      }
+
+      function addMarker(location) {
+        marker = new google.maps.Marker({
+          position: location,
+          map: map,
+          draggable: true
+        });
+        marker.addListener("dragend", () => {
+          updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+        });
+      }
+
+      function updateFormFields(lat, lng) {
+        document.getElementById("lat").value = lat.toFixed(6);
+        document.getElementById("lng").value = lng.toFixed(6);
+      }
+
+      function loadScript() {
+        const script = document.createElement("script");
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDPaB2GxxuZlBHUALFnLKRMCcIFNt7LH8A&callback=initMap";
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+      }
+      window.onload = loadScript;
+    </script>
+  </body>
+</html>
