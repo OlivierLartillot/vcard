@@ -1,0 +1,155 @@
+{# templates/admin/my-custom-page.html.twig #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Place ton adresse sur la carte{% endblock %}
+{% block page_actions %}
+    <a class="btn btn-primary" href="...">Some Action</a>
+{% endblock %}
+
+{% block main %}
+
+<style>
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+    
+    
+    <form id="geocode-form">
+        <label for="address-input">Entrez une adresse :</label>
+        <input type="text" id="address-input" name="address" class="form-control">
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+    <div id="map"></div>
+    <form>
+        <label for="lat">Latitude:</label>
+        <input type="text" id="lat" name="lat" class="form-control"><br>
+        <label for="lng">Longitude:</label>
+        <input type="text" id="lng" name="lng" class="form-control"><br>
+
+        <input type="submit" class="btn btn-primary"/>
+
+
+    </form>
+
+
+    ma variable env: 
+    <script>
+      let map;
+      let marker;
+      let test = true;
+      let lat;
+      let lng;
+
+      function initMap() {
+
+        if (test == true) {
+            lat = 18.910857
+            lng = -70.234814
+        }
+
+
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat, lng }, // Coordonnées de Paris, France
+          zoom: 8
+        });
+        marker = new google.maps.Marker({
+          position: { lat, lng }, // Coordonnées de Paris, France
+          map: map,
+          draggable: true
+        });
+        marker.addListener("dragend", () => {
+          updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+        });
+
+        // Ajouter un écouteur d'événements pour le formulaire de géocodage
+        const geocodeForm = document.getElementById("geocode-form");
+        geocodeForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          geocodeAddress();
+        });
+
+        updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+        map.addListener("click", (event) => {
+          if (marker) {
+            marker.setPosition(event.latLng);
+          } else {
+            addMarker(event.latLng);
+          }
+          updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+        });
+      }
+
+      function addMarker(location) {
+        marker = new google.maps.Marker({
+          position: location,
+          map: map,
+          draggable: true
+        });
+        marker.addListener("dragend", () => {
+          updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+        });
+      }
+
+      function updateFormFields(lat, lng) {
+        document.getElementById("lat").value = lat.toFixed(6);
+        document.getElementById("lng").value = lng.toFixed(6);
+      }
+
+
+      function geocodeAddress() {
+        const geocoder = new google.maps.Geocoder();
+        const address = document.getElementById("address-input").value;
+        geocoder.geocode({ address }, (results, status) => {
+          if (status === "OK") {
+            const location = results[0].geometry.location;
+            map.setCenter(location);
+            if (marker) {
+              marker.setPosition(location);
+            } else {
+              addMarker(location);
+            }
+            updateFormFields(location.lat(), location.lng());
+          } else {
+            alert(`Impossible de géocoder l'adresse : ${status}`);
+          }
+        });
+      }
+
+      function loadScript() {
+        const script = document.createElement("script");
+        script.src = "https://maps.googleapis.com/maps/api/js?key={{ API_KEY_GOOGLE_MAP }}&callback=initMap";
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+      }
+      window.onload = loadScript;
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </body>
+
+
+
+
+
+{% endblock %}

@@ -1,6 +1,9 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    globals:
+        API_KEY_GOOGLE_MAP: '%env(API_KEY_GOOGLE_MAP)%'
 
 when@test:
     twig:
         strict_variables: true
+

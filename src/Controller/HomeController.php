@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use JeroenDesloovere\VCard\VCard;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class HomeController extends AbstractController
 {
@@ -15,6 +16,17 @@ class HomeController extends AbstractController
     {
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
+        ]);
+    }
+
+    #[Route('/adresse', name: 'app_adresse')]
+    public function adress(KernelInterface $kernel): Response
+    {
+
+        //dd($this->getParameter('API_KEY_GOOGLE_MAP'));
+        return $this->render('admin/adress-picker.html.twig', [
+           
+            
         ]);
     }
 
