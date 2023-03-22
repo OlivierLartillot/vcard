@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -31,6 +33,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserSocial::class)]
+    private Collection $userSocials;
+
+    public function __construct()
+    {
+        $this->userSocials = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -110,6 +120,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserSocial>
+     */
+    public function getUserSocials(): Collection
+    {
+        return $this->userSocials;
+    }
+
+    public function addUserSocial(UserSocial $userSocial): self
+    {
+        if (!$this->userSocials->contains($userSocial)) {
+            $this->userSocials->add($userSocial);
+            $userSocial->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserSocial(UserSocial $userSocial): self
+    {
+        if ($this->userSocials->removeElement($userSocial)) {
+            // set the owning side to null (unless already changed)
+            if ($userSocial->getUser() === $this) {
+                $userSocial->setUser(null);
+            }
+        }
 
         return $this;
     }
