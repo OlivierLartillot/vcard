@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SocialRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,13 +20,15 @@ class Social
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $link = null;
+    private ?string $defaultPicture = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $published = null;
+    #[ORM\OneToMany(mappedBy: 'social', targetEntity: UserSocial::class)]
+    private Collection $userSocials;
 
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?int $orderAppearance = null;
+    public function __construct()
+    {
+        $this->userSocials = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -43,39 +47,50 @@ class Social
         return $this;
     }
 
-    public function getLink(): ?string
+    public function getDefaultPicture(): ?string
     {
-        return $this->link;
+        return $this->defaultPicture;
     }
 
-    public function setLink(?string $link): self
+    public function setDefaultPicture(?string $defaultPicture): self
     {
-        $this->link = $link;
+        $this->defaultPicture = $defaultPicture;
 
         return $this;
     }
 
-    public function isPublished(): ?bool
+    /**
+     * @return Collection<int, UserSocial>
+     */
+    public function getUserSocials(): Collection
     {
-        return $this->published;
+        return $this->userSocials;
     }
 
-    public function setPublished(?bool $published): self
+    public function addUserSocial(UserSocial $userSocial): self
     {
-        $this->published = $published;
+        if (!$this->userSocials->contains($userSocial)) {
+            $this->userSocials->add($userSocial);
+            $userSocial->setSocial($this);
+        }
 
         return $this;
     }
 
-    public function getOrderAppearance(): ?int
+    public function removeUserSocial(UserSocial $userSocial): self
     {
-        return $this->orderAppearance;
-    }
-
-    public function setOrderAppearance(?int $orderAppearance): self
-    {
-        $this->orderAppearance = $orderAppearance;
+        if ($this->userSocials->removeElement($userSocial)) {
+            // set the owning side to null (unless already changed)
+            if ($userSocial->getSocial() === $this) {
+                $userSocial->setSocial(null);
+            }
+        }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

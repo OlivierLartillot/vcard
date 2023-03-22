@@ -25,23 +25,22 @@ class Company
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adress = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $latitude = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $longitude = null;
-
     #[ORM\Column(length: 12, nullable: true)]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
 
-    #[ORM\OneToOne(mappedBy: 'company', cascade: ['persist', 'remove'])]
+    #[ORM\Column(length: 255)]
+    private ?string $Email = null;
+
+    #[ORM\OneToOne(inversedBy: 'company', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\OneToOne(mappedBy: 'company', cascade: ['persist', 'remove'])]
+    private ?GmapAdress $gmapAdress = null;
+
 
     public function getId(): ?int
     {
@@ -96,30 +95,6 @@ class Company
         return $this;
     }
 
-    public function getLatitude(): ?string
-    {
-        return $this->latitude;
-    }
-
-    public function setLatitude(?string $latitude): self
-    {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    public function getLongitude(): ?string
-    {
-        return $this->longitude;
-    }
-
-    public function setLongitude(?string $longitude): self
-    {
-        $this->longitude = $longitude;
-
-        return $this;
-    }
-
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
@@ -128,18 +103,6 @@ class Company
     public function setPhoneNumber(?string $phoneNumber): self
     {
         $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(?string $email): self
-    {
-        $this->email = $email;
 
         return $this;
     }
@@ -155,31 +118,52 @@ class Company
 
         return $this;
     }
+    
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->Email;
+    }
+
+    public function setEmail(string $Email): self
+    {
+        $this->Email = $Email;
+
+        return $this;
+    }
 
     public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
-        // unset the owning side of the relation if necessary
-        if ($user === null && $this->user !== null) {
-            $this->user->setCompany(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($user !== null && $user->getCompany() !== $this) {
-            $user->setCompany($this);
-        }
-
         $this->user = $user;
 
         return $this;
     }
 
-    public function __toString()
+    public function getGmapAdress(): ?GmapAdress
     {
-        return $this->getName();
+        return $this->gmapAdress;
     }
+
+    public function setGmapAdress(GmapAdress $gmapAdress): self
+    {
+        // set the owning side of the relation if necessary
+        if ($gmapAdress->getCompany() !== $this) {
+            $gmapAdress->setCompany($this);
+        }
+
+        $this->gmapAdress = $gmapAdress;
+
+        return $this;
+    }
+
+
 }

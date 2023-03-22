@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -32,8 +34,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
-    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserSocial::class)]
+    private Collection $userSocials;
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Company $company = null;
+
+
+    public function __construct()
+    {
+        $this->userSocials = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -118,13 +129,49 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCompany(): ?company
+
+    /**
+     * @return Collection<int, UserSocial>
+     */
+    public function getUserSocials(): Collection
+    {
+        return $this->userSocials;
+    }
+
+    public function addUserSocial(UserSocial $userSocial): self
+    {
+        if (!$this->userSocials->contains($userSocial)) {
+            $this->userSocials->add($userSocial);
+            $userSocial->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserSocial(UserSocial $userSocial): self
+    {
+        if ($this->userSocials->removeElement($userSocial)) {
+            // set the owning side to null (unless already changed)
+            if ($userSocial->getUser() === $this) {
+                $userSocial->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
     {
         return $this->company;
     }
 
-    public function setCompany(?company $company): self
+    public function setCompany(Company $company): self
     {
+        // set the owning side of the relation if necessary
+        if ($company->getUser() !== $this) {
+            $company->setUser($this);
+        }
+
         $this->company = $company;
 
         return $this;

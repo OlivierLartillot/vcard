@@ -18,18 +18,12 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
-
     #[Route('/adresse', name: 'app_adresse')]
     public function adress(KernelInterface $kernel): Response
     {
-
-        //dd($this->getParameter('API_KEY_GOOGLE_MAP'));
-        return $this->render('admin/adress-picker.html.twig', [
-           
-            
+        return $this->render('admin/adress-picker.html.twig', [            
         ]);
     }
-
 
     #[Route('/test', name: 'app_test')]
     public function test(): Response
