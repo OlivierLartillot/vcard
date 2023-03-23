@@ -16,11 +16,11 @@ class UserSocial
 
     #[ORM\ManyToOne(inversedBy: 'userSocials')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $user = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'userSocials')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?social $social = null;
+    private ?Social $social = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $link = null;
@@ -36,24 +36,24 @@ class UserSocial
         return $this->id;
     }
 
-    public function getUser(): ?user
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?user $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getSocial(): ?social
+    public function getSocial(): ?Social
     {
         return $this->social;
     }
 
-    public function setSocial(?social $social): self
+    public function setSocial(?Social $social): self
     {
         $this->social = $social;
 

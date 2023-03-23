@@ -6,6 +6,7 @@ use App\Entity\UserSocial;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+
 /**
  * @extends ServiceEntityRepository<UserSocial>
  *
@@ -16,9 +17,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserSocialRepository extends ServiceEntityRepository
 {
+
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, UserSocial::class);
+       
     }
 
     public function save(UserSocial $entity, bool $flush = false): void
