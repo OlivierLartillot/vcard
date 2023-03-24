@@ -48,9 +48,19 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('User', 'fas fa-list', User::class)->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Réseaux Sociaux', 'fas fa-list', Social::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Mes réseaux', 'fas fa-list', UserSocial::class)->setPermission('ROLE_EDITOR');
-        yield MenuItem::linkToCrud('Informations', 'fas fa-list', Company::class)->setPermission('ROLE_EDITOR');
-        yield MenuItem::linkToCrud('Gmap', 'fas fa-list', GmapLocalisation::class)->setPermission('ROLE_EDITOR');
+
+        if ($this->isGranted('ROLE_COMPANY') or $this->isGranted('ROLE_PERSON')) {
+            yield MenuItem::linkToCrud('Mes réseaux', 'fas fa-list', UserSocial::class); 
+        }
+
+        yield MenuItem::subMenu('Company', 'fa-solid fa-shop')
+            ->setPermission('ROLE_COMPANY')
+            ->setSubItems([
+                MenuItem::linkToCrud('Informations', 'fas fa-list', Company::class)->setPermission('ROLE_COMPANY'),
+                MenuItem::linkToCrud('Localisation', 'fas fa-list', GmapLocalisation::class)->setPermission('ROLE_COMPANY'),
+          
+            ]);
+        yield MenuItem::linkToCrud('Personnals Informations', 'fas fa-list', Company::class)->setPermission('ROLE_PERSON');
 
      
     }

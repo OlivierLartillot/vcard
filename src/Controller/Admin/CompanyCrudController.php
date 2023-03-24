@@ -13,8 +13,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+use Symfony\Component\Asset\Package;
+use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 
 class CompanyCrudController extends AbstractCrudController
 {
@@ -57,15 +64,66 @@ class CompanyCrudController extends AbstractCrudController
 
 
     
-/*     public function configureFields(string $pageName): iterable
+    public function configureFields(string $pageName): iterable
     {
-        return [
-            IdField::new('id')->hideOnForm(),
-            TextField::new('name', 'Company Name'),
-            TextField::new('firstname', 'Firstname'),
-            TextField::new('Lastname', 'Lastname'),
-            AssociationField::new('user')->hideOnForm(),
-        ];
-    } */
+        $package = new Package(new EmptyVersionStrategy());
+        if ($_ENV['APP_ENV']  == 'dev' ){
+            $uploadPath = $package->getUrl('public\images\logos\\');  
+        } else{
+            $uploadPath = $package->getUrl('public/images/logos/');  
+        }
+
+        $path = $package->getUrl('/images/logos/');
+
+
+        if ( (in_array( "ROLE_ADMIN" ,$this->getUser()->getRoles())) or (in_array( "ROLE_COMPANY" ,$this->getUser()->getRoles())) ){
+
+            return [
+
+                //--------- Add a tab ---------
+                FormField::addTab('Basic information'),
+                //--------- Fields ---------
+                IdField::new('id')->hideOnForm(),
+                TextField::new('name', 'Company Name'),
+                TextField::new('firstname', 'Firstname'),
+                TextField::new('lastname', 'Lastname'),
+                ImageField::new('logo', 'Logo')->setUploadDir($uploadPath)->setBasePath($path),
+                TelephoneField::new('phoneNumber','Phone Number'),
+                EmailField::new('email','Email'),
+                //--------- Add a tab ---------
+                FormField::addTab('Other Information'),
+                //--------- Fields ---------
+                UrlField::new('website', 'Website'),
+                TextField::new('address', 'Address'),
+                ImageField::new('otherMedia', 'Other Media')->setUploadDir($uploadPath)->setBasePath($path),
+                //--------- Automatic Fields  ---------
+                AssociationField::new('user')->hideOnForm(),
+            ];
+
+        }
+        else {
+            return [
+
+                //--------- Add a tab ---------
+                FormField::addTab('Basic information'),
+                //--------- Fields ---------
+                IdField::new('id')->hideOnForm(),
+                TextField::new('firstname', 'Firstname'),
+                TextField::new('lastname', 'Lastname'),
+                ImageField::new('logo', 'Avatar')->setUploadDir($uploadPath)->setBasePath($path),
+                TelephoneField::new('phoneNumber','Phone Number'),
+                EmailField::new('email','Email'),
+                //--------- Add a tab ---------
+                FormField::addTab('Other Information'),
+                 //--------- Fields ---------
+                UrlField::new('website', 'Website'),
+                ImageField::new('otherMedia', 'Other Media')->setUploadDir($uploadPath)->setBasePath($path),
+                //--------- Automatic Fields  ---------
+                AssociationField::new('user')->hideOnForm(),
+            ];
+
+        }
+   
+    }
     
 }
