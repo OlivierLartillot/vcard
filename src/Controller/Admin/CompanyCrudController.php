@@ -75,7 +75,6 @@ class CompanyCrudController extends AbstractCrudController
 
         $path = $package->getUrl('/images/logos/');
 
-
         if ( (in_array( "ROLE_ADMIN" ,$this->getUser()->getRoles())) or (in_array( "ROLE_COMPANY" ,$this->getUser()->getRoles())) ){
 
             return [

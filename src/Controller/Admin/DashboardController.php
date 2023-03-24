@@ -62,6 +62,9 @@ class DashboardController extends AbstractDashboardController
             ]);
         yield MenuItem::linkToCrud('Personnals Informations', 'fas fa-list', Company::class)->setPermission('ROLE_PERSON');
 
+
+
+        yield MenuItem::linkToRoute('Gmap TEST', 'fas fa-list', 'app_admin_gmap', []);
      
     }
 }

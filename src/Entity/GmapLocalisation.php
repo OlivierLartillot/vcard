@@ -19,6 +19,9 @@ class GmapLocalisation
     #[ORM\Column(length: 255)]
     private ?string $longitude = null;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?User $user = null;
+
 
     public function getId(): ?int
     {
@@ -45,6 +48,18 @@ class GmapLocalisation
     public function setLongitude(string $longitude): self
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

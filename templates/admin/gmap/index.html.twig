@@ -1,0 +1,167 @@
+{# templates/admin/my-custom-page.html.twig #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Place ton adresse sur la carte{% endblock %}
+{% block page_actions %}
+    <a class="btn btn-primary" href="...">Some Action</a>
+{% endblock %}
+
+{% block main %}
+
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+    
+    
+    <form id="geocode-form">
+        <label for="address-input">Entrez une adresse :</label>
+        <input type="text" id="address-input" name="address" class="form-control">
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+    <div id="map"></div>
+    <form Action="{{ path("app_admin_gmap")}}" method="post">
+        <label for="lat">Latitude:</label>
+        <input type="text" id="lat" name="lat" class="form-control" value="{% if latEnBdd is not null %} {{ latEnBdd }} {% endif %}"><br>
+        <label for="lng">Longitude:</label>
+        <input type="text" id="lng" name="lng" class="form-control" value="{% if lngEnBdd is not null %} {{ lngEnBdd }} {% endif %}"><br>
+
+        <input type="submit" class="btn btn-primary"/>
+    </form>
+
+
+
+    <script>
+    let map;
+    let marker;
+    let defaultLatLng = { lat: 18.910857, lng: -70.234814 }; // Coordonnées par défaut
+    let usingGPS = false; // Indique si l'utilisateur utilise le GPS
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: defaultLatLng,
+            zoom: 8,
+        });
+
+            // Vérification des valeurs existantes dans le formulaire pour le centrage de la carte et le placement du marqueur
+            let latInput = document.getElementById("lat");
+            let lngInput = document.getElementById("lng");
+            if (latInput.value && lngInput.value) {
+                let position = { lat: parseFloat(latInput.value), lng: parseFloat(lngInput.value) };
+                addMarker(position);
+            } else {        
+
+
+                // Ajouter un écouteur d'événements pour le formulaire de géocodage
+                const geocodeForm = document.getElementById("geocode-form");
+
+                if (geocodeForm) {
+                    geocodeForm.addEventListener('submit', geocodeAddress)
+                }
+
+                // Vérification si le GPS est disponible à l'ouverture de la page
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        let userLatLng = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        };
+                        // Placement du marqueur à la position de l'utilisateur
+                        addMarker(userLatLng);
+                        usingGPS = true;
+                    },
+                    () => {
+                        addMarker(defaultLatLng);
+                    }
+                    );
+                } else {
+                    addMarker(defaultLatLng);
+                }
+            }
+
+        // Ajout d'un écouteur d'événement pour le clic sur la carte
+        map.addListener("click", (event) => {
+            if (marker) {
+                marker.setPosition(event.latLng);
+            } else {
+                addMarker(event.latLng);
+            }
+            updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+        });
+        }
+
+        function addMarker(location) {
+            if (marker) {
+                marker.setPosition(location);
+            } else {
+                marker = new google.maps.Marker({
+                position: location,
+                map: map,
+                draggable: true,
+                });
+                marker.addListener("dragend", () => {
+                updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+                });
+            }
+            updateFormFields(marker.getPosition().lat(), marker.getPosition().lng());
+            map.setCenter(location);
+        }
+
+        function updateFormFields(lat, lng) {
+        document.getElementById("lat").value = lat.toFixed(6);
+        document.getElementById("lng").value = lng.toFixed(6);
+        }
+        function geocodeAddress(event) {
+            event.preventDefault();
+            const geocoder = new google.maps.Geocoder();
+            const address = document.getElementById("address-input").value;
+            geocoder.geocode({ address }, (results, status) => {
+                if (status === "OK") {
+                const location = results[0].geometry.location;
+                if (marker) {
+                    marker.setPosition(location);
+                } else {
+                    addMarker(location);
+                }
+                map.setCenter(location);
+                updateFormFields(location.lat(), location.lng());
+                } else {
+                alert(`Impossible de géocoder l'adresse : ${status}`);
+                }
+            });
+        }
+      function loadScript() {
+        const script = document.createElement("script");
+        script.src = "https://maps.googleapis.com/maps/api/js?key={{ API_KEY_GOOGLE_MAP }}&callback=initMap";
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+      }
+      window.onload = loadScript;
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </body>
+
+
+
+
+
+{% endblock %}

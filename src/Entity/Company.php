@@ -43,9 +43,6 @@ class Company
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?GmapLocalisation $gmapLocalisation = null;
-
 
     public function getId(): ?int
     {
@@ -168,18 +165,6 @@ class Company
     public function setUser(?User $user): self
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getGmapLocalisation(): ?GmapLocalisation
-    {
-        return $this->gmapLocalisation;
-    }
-
-    public function setGmapLocalisation(?GmapLocalisation $gmapLocalisation): self
-    {
-        $this->gmapLocalisation = $gmapLocalisation;
 
         return $this;
     }
