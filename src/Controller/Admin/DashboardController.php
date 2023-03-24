@@ -43,6 +43,7 @@ class DashboardController extends AbstractDashboardController
             ->setTitle('Vcard');
     }
 
+
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
@@ -58,13 +59,13 @@ class DashboardController extends AbstractDashboardController
             ->setSubItems([
                 MenuItem::linkToCrud('Informations', 'fas fa-list', Company::class)->setPermission('ROLE_COMPANY'),
                 MenuItem::linkToCrud('Localisation', 'fas fa-list', GmapLocalisation::class)->setPermission('ROLE_COMPANY'),
+                MenuItem::linkToRoute('Gmap TEST', 'fas fa-list', 'app_admin_gmap', [])->setPermission('ROLE_COMPANY'),
           
             ]);
         yield MenuItem::linkToCrud('Personnals Informations', 'fas fa-list', Company::class)->setPermission('ROLE_PERSON');
 
 
 
-        yield MenuItem::linkToRoute('Gmap TEST', 'fas fa-list', 'app_admin_gmap', []);
      
     }
 }

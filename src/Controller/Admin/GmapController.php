@@ -24,14 +24,12 @@ class GmapController extends AbstractController
     #[Route('/admin/gmap', name: 'app_admin_gmap', methods: ['GET', 'POST'])]
     public function index(HttpFoundationRequest $request, GmapLocalisationRepository $gmapLocalisationRepository): Response
     {
-
-
-    
         $gmap = $gmapLocalisationRepository->findOneBy(['user' => $this->getUser()]);
 
         $latEnBdd = ($gmap and $gmap->getLatitude() != null) ? $gmap->getLatitude() : null ;
         $lngEnBdd = ($gmap and $gmap->getLongitude() != null) ? $gmap->getLongitude() : null ;
         $error = null;
+        $success = null;
         $url = $this->adminUrlGenerator->setRoute('app_admin_gmap', [])->generateUrl();
         
         if (!empty($_POST) ) {
@@ -56,6 +54,8 @@ class GmapController extends AbstractController
                         $gmap->setLatitude($request->request->get('lat'));
                         $gmap->setLongitude($request->request->get('lng'));
                         $gmapLocalisationRepository->save($gmap, true);
+
+                        $success = "Your adress has been updated.";
                     } 
                     // sinon on créé gmap et on le lie a la company 
                     else {
@@ -64,7 +64,12 @@ class GmapController extends AbstractController
                         $gmap->setLongitude($request->request->get('lng'));
                         $gmap->setUser($this->getUser());
                         $gmapLocalisationRepository->save($gmap, true);
+                        $success = "Your adress has been created.";
+
                     }
+                    $url = $this->adminUrlGenerator->setRoute('app_admin_gmap', ['success' => $success])->generateUrl();
+
+                    
                 }
             }
             

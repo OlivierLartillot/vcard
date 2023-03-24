@@ -13,6 +13,11 @@
             {{ app.request.attributes.get('error') }}
         </div>
     {% endif %}
+    {% if app.request.attributes.get('success')  %} 
+        <div class="lead border rounded p-3 bg-success text-white fs-3">
+            {{ app.request.attributes.get('success') }}
+        </div>
+    {% endif %}
 
 
     <style>
@@ -50,7 +55,7 @@
     function initMap() {
         map = new google.maps.Map(document.getElementById("map"), {
             center: defaultLatLng,
-            zoom: 8,
+            zoom: 10,
         });
             // Ajouter un écouteur d'événements pour le formulaire de géocodage
             const geocodeForm = document.getElementById("geocode-form");
@@ -65,6 +70,7 @@
             if (latInput.value && lngInput.value) {
                 let position = { lat: parseFloat(latInput.value), lng: parseFloat(lngInput.value) };
                 addMarker(position);
+                
             } else {        
 
 
