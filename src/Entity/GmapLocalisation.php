@@ -19,8 +19,6 @@ class GmapLocalisation
     #[ORM\Column(length: 255)]
     private ?string $longitude = null;
 
-    #[ORM\OneToOne(mappedBy: 'gmapLocalisation', cascade: ['persist', 'remove'])]
-    private ?Company $company = null;
 
     public function getId(): ?int
     {
@@ -51,25 +49,5 @@ class GmapLocalisation
         return $this;
     }
 
-    public function getCompany(): ?Company
-    {
-        return $this->company;
-    }
 
-    public function setCompany(?Company $company): self
-    {
-        // unset the owning side of the relation if necessary
-        if ($company === null && $this->company !== null) {
-            $this->company->setGmapLocalisation(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($company !== null && $company->getGmapLocalisation() !== $this) {
-            $company->setGmapLocalisation($this);
-        }
-
-        $this->company = $company;
-
-        return $this;
-    }
 }

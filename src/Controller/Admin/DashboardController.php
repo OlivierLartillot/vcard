@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Company;
+use App\Entity\GmapLocalisation;
 use App\Entity\Social;
 use App\Entity\User;
 use App\Entity\UserSocial;
@@ -47,5 +49,9 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('User', 'fas fa-list', User::class)->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Réseaux Sociaux', 'fas fa-list', Social::class)->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Mes réseaux', 'fas fa-list', UserSocial::class)->setPermission('ROLE_EDITOR');
+        yield MenuItem::linkToCrud('Informations', 'fas fa-list', Company::class)->setPermission('ROLE_EDITOR');
+        yield MenuItem::linkToCrud('Gmap', 'fas fa-list', GmapLocalisation::class)->setPermission('ROLE_EDITOR');
+
+     
     }
 }

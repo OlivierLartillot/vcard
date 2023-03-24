@@ -40,11 +40,12 @@ class Company
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
 
-    #[ORM\OneToOne(inversedBy: 'company', cascade: ['persist', 'remove'])]
-    private ?user $user = null;
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?User $user = null;
 
-    #[ORM\OneToOne(inversedBy: 'company', cascade: ['persist', 'remove'])]
-    private ?gmapLocalisation $gmapLocalisation = null;
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?GmapLocalisation $gmapLocalisation = null;
+
 
     public function getId(): ?int
     {
@@ -159,27 +160,29 @@ class Company
         return $this;
     }
 
-    public function getUser(): ?user
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?user $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getGmapLocalisation(): ?gmapLocalisation
+    public function getGmapLocalisation(): ?GmapLocalisation
     {
         return $this->gmapLocalisation;
     }
 
-    public function setGmapLocalisation(?gmapLocalisation $gmapLocalisation): self
+    public function setGmapLocalisation(?GmapLocalisation $gmapLocalisation): self
     {
         $this->gmapLocalisation = $gmapLocalisation;
 
         return $this;
     }
+
+
 }
