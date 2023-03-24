@@ -27,3 +27,7 @@
 .main-container {
     margin-top: 4rem;
 }
+
+.bg-danger-subtle {
+    background-color: #f8d7da;
+}

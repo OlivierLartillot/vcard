@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\GmapLocalisation;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -13,6 +14,15 @@ class GmapLocalisationCrudController extends AbstractCrudController
     {
         return GmapLocalisation::class;
     }
+
+
+    public function configureAssets(Assets $assets): Assets
+    {
+        return $assets->addCssFile('css/admin.css');
+
+            
+    }
+
 
     
     public function configureFields(string $pageName): iterable
